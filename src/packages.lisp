@@ -9,6 +9,9 @@
    #:make-seq-file-in
    #:make-simple-score
    #:make-align
+   #:make-align-config
+   #:rows
+   #:row
    #:append-value
    #:at-end
    #:to-string
@@ -24,4 +27,7 @@
    #:end-position
    #:infix
    #:length
+   #:resize
+   #:assign-source
+   #:global-alignment
    ))

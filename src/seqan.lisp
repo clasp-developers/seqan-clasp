@@ -152,6 +152,7 @@
     (|getScore<Pattern<StringSet<Dna5QString>,DPSearch<SimpleScore>>| pattern))
   )
 
+
 (defgeneric find-begin (finder pattern score)
   (:method ((finder |Finder<CharString,void>|)
             (pattern |Pattern<CharString,DPSearch<SimpleScore>>|)
@@ -217,9 +218,15 @@
   )
 
 (defgeneric length (finder)
-  (:method length ((finder |Finder<CharString,void>|)) (|length<Finder<CharString,void>>| finder))
-  (:method length ((finder |Finder<DnaString,void>|)) (|length<Finder<DnaString,void>>| finder))
-  (:method length ((finder |Finder<Dna5QString,void>|)) (|length<Finder<Dna5QString,void>>| finder))
+  (:method ((finder |Finder<CharString,void>|)) (|length<Finder<CharString,void>>| finder))
+  (:method ((finder |Finder<DnaString,void>|)) (|length<Finder<DnaString,void>>| finder))
+  (:method ((finder |Finder<Dna5QString,void>|)) (|length<Finder<Dna5QString,void>>| finder))
+  (:method ((finder |CharString|)) (|length(CharString)| finder))
+  (:method ((finder |DnaString|)) (|length(DnaString)| finder))
+  (:method ((finder |Dna5QString|)) (|length(Dna5QString)| finder))
+  (:method ((finder |String<Gaps<CharString>>|)) (|length(String<Gaps<CharString>>)| finder ))
+  (:method ((finder |String<Gaps<DnaString>>|)) (|length(String<Gaps<DnaString>>)| finder ))
+  (:method ((finder |String<Gaps<Dna5QString>>|)) (|length(String<Gaps<Dna5QString>>)| finder ))
   )
 
 (defgeneric make-align (kind)
@@ -227,4 +234,119 @@
   (:method ((kind (eql :dna-string))) (|make-Align<DnaString,ArrayGaps>|))
   (:method ((kind (eql :dna5q-string))) (|make-Align<Dna5QString,ArrayGaps>|))
   )
-  
+
+(defgeneric row (align index)
+  (:method ((align |Align<CharString,ArrayGaps>|) index) (|row(Align<CharString,ArrayGaps>,int)| align index))
+  (:method ((align |Align<DnaString,ArrayGaps>|) index) (|row(Align<DnaString,ArrayGaps>,int)| align index))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) index) (|row(Align<Dna5QString,ArrayGaps>,int)| align index))
+  )
+
+(defgeneric rows (align)
+  (:method ((align |Align<CharString,ArrayGaps>|)) (|rows<Align<CharString,ArrayGaps>>| align))
+  (:method ((align |Align<DnaString,ArrayGaps>|)) (|rows<Align<DnaString,ArrayGaps>>| align))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|)) (|rows<Align<Dna5QString,ArrayGaps>>| align))
+  )
+
+(defgeneric resize (rows num)
+  (:method ((rows |String<Gaps<CharString>>|) num)
+    (|resize<String<Gaps<CharString>>>| rows num))
+  (:method ((rows |String<Gaps<DnaString>>|) num)
+    (|resize<String<Gaps<DnaString>>>| rows num))
+  (:method ((rows |String<Gaps<Dna5QString>>|) num)
+    (|resize<String<Gaps<Dna5QString>>>| rows num))
+  )
+
+(defgeneric assign-source (row num)
+  (:method ((row |Gaps<CharString>|) num)
+    (|assignSource(Gaps<CharString>&,int)| row num))
+  (:method ((row |Gaps<DnaString>|) num)
+    (|assignSource(Gaps<DnaString>&,int)| row num))
+  (:method ((row |Gaps<Dna5QString>|) num)
+    (|assignSource(Gaps<Dna5QString>&,int)| row num))
+  )
+
+(defun make-align-config (&optional (kind :nil-nil-nil-nil))
+  (ecase kind
+    (:nil-nil-nil-nil (|make-AlignConfig<false,false,false,false>|))
+    (:nil-t-t-nil     (|make-AlignConfig<false,true,true,false>|))
+    (:t-nil-nil-t     (|make-AlignConfig<true,false,false,true>|))
+    ))
+
+
+(defgeneric global-alignment (align score align-config)
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|))
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|))
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|))
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<DnaString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|))
+    (|globalAlignment(Align<DnaString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<DnaString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|))
+    (|globalAlignment(Align<DnaString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<DnaString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|))
+    (|globalAlignment(Align<DnaString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|))
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|))
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>)|
+     align
+     score
+     align-config))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|))
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>)|
+     align
+     score
+     align-config))
+  )
+
+(defgeneric global-alignment-banded (align score align-config lower-diagonal upper-diagonal)
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<CharString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<DnaString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<DnaString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<DnaString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<DnaString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,false,false,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<false,true,true,false>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<false,true,true,false>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  (:method ((align |Align<Dna5QString,ArrayGaps>|) (score |SimpleScore|) (align-config |AlignConfig<true,false,false,true>|) lower-diagonal upper-diagonal)
+    (|globalAlignment(Align<Dna5QString,ArrayGaps>,SimpleScore,AlignConfig<true,false,false,true>,int,int)|
+     align score align-config lower-diagonal upper-diagonal))
+  )
