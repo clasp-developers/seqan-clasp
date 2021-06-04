@@ -3,24 +3,46 @@
 (asdf:load-system :seqan :force t)
 
 (progn
-  (defparameter seq1 (sa:make-string :char-string "CJKDSFJLSVCDEFXXGAHCCJSDFJ"))
-  (defparameter seq2 (sa:make-string :char-string "CDEFGAHC"))
+  (defparameter seq1 (sa:make-string :char-string "CDFGDC"))
+  (defparameter seq2 (sa:make-string :char-string "CDEFGAHGC"))
   (defparameter align (sa:make-align :char-string))
-  (sa:resize (sa:rows align) 2)
-  (sa:assign-source (sa:row align 0) seq1)
-  (sa:assign-source (sa:row align 1) seq2)
-  (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq1)
+  (sa:assign-source (sa:row& align 1) seq2)
+  )
+
+
+
+(progn
+  (defparameter seq1 (sa:make-string :dna5q-string "AGCTAGCTC"))
+  (defparameter seq2 (sa:make-string :dna5q-string "AGCT"))
+  (defparameter align (sa:make-align :dna5q-string))
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq1)
+  (sa:assign-source (sa:row& align 1) seq2)
+  (defparameter score (sa::global-alignment align (sa:make-simple-score 3 -3 -2 -2)))
+  (format t "Score: ~a~%" score)
+  (format t "Align:~%~a~%" (sa:to-string align)))
+
+(progn
+  (defparameter seq1 (sa:make-string :char-string "aphilologicaltheorem"))
+  (defparameter seq2 (sa:make-string :char-string "bizarreamphibology"))
+  (defparameter align (sa:make-align :char-string))
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq1)
+  (sa:assign-source (sa:row& align 1) seq2)
+  (defparameter score (sa:global-alignment align (sa:make-simple-score 3 -3 -2 -2) (sa:make-align-config :t-nil-nil-t)))
   #+(or)(time (dotimes (i 1000000) (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t))))
   (format t "Score: ~a~%" score)
-  (format t "~a~%" (sa:to-string align)))
+  (format t "Align:~%~a~%" (sa:to-string align)))
 
 (progn
   (defparameter seq1 (sa:make-string :dna5q-string "GCCGCCACAGTCCT"))
   (defparameter seq2 (sa:make-string :dna5q-string "AGTGCCGCCTGCCC"))
   (defparameter align (sa:make-align :dna5q-string))
-  (sa:resize (sa:rows align) 2)
-  (sa:assign-source (sa:row align 0) seq1)
-  (sa:assign-source (sa:row align 1) seq2)
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq1)
+  (sa:assign-source (sa:row& align 1) seq2)
   (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
   #+(or)(time (dotimes (i 1000000) (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t))))
   (format t "Score: ~a~%" score)
@@ -38,9 +60,9 @@
   (defparameter needle (sa:make-string :dna5q-string "GCCGCCCAGTCCTGCTCGCTTCGCTACATGG")) ; forward primer
   #+(or)(defparameter needle (sa:make-string :dna5q-string "GCCGCCCATCCTGCTCGTTCGCTACATGG"))
   (defparameter align (sa:make-align :dna5q-string))
-  (sa:resize (sa:rows align) 2)
-  (sa:assign-source (sa:row align 0) seq)
-  (sa:assign-source (sa:row align 1) needle)
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq)
+  (sa:assign-source (sa:row& align 1) needle)
   (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
   (format t "   seq: ~a~%" (sa:to-string seq))
   (format t "needle: ~a~%" (sa:to-string needle))
@@ -49,12 +71,27 @@
   )
 
 (progn
+  (defparameter needle (sa:make-string :dna5q-string "TGGCCCAAGGATCA"))
+  (defparameter align (sa:make-align :dna5q-string))
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq)
+  (sa:assign-source (sa:row& align 1) needle)
+  (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)
+                                           38 39))
+  (format t "   seq: ~a~%" (sa:to-string seq))
+  (format t "needle: ~a~%" (sa:to-string needle))
+  (format t "score = ~d~%" score)
+  (format t "align = ~%~s~%" (sa:to-string align))
+  )
+
+    
+(progn
   (sa:read-record title seq short-file)
   (defparameter needle (sa:make-string :dna5q-string "GTGGCACAACAACTG")) ;; "CAGTTGTTGTGCCAC")) ;; Deluge says this is reverse primer (reversed complement)
   (defparameter align (sa:make-align :dna5q-string))
-  (sa:resize (sa:rows align) 2)
-  (sa:assign-source (sa:row align 0) seq)
-  (sa:assign-source (sa:row align 1) needle)
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq)
+  (sa:assign-source (sa:row& align 1) needle)
   (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
   (format t "   seq: ~a~%" (sa:to-string seq))
   (format t "needle: ~a~%" (sa:to-string needle))
@@ -65,11 +102,11 @@
 
 (progn
   (sa:read-record title seq short-file)
-  (defparameter needle (sa:make-string :dna5q-string "TCTACGGAGCAAAGAACCTCAAGCCTGTTTGCCCG")) ;; Raw data constant region
+  (defparameter needle (sa:make-string :dna5q-string "GTTTGCCCGCCAGTTGTTGTGCCACAGATCGGAAGAGCACA")) ;; Raw data constant region
   (defparameter align (sa:make-align :dna5q-string))
-  (sa:resize (sa:rows align) 2)
-  (sa:assign-source (sa:row align 0) seq)
-  (sa:assign-source (sa:row align 1) needle)
+  (sa:resize (sa:rows& align) 2)
+  (sa:assign-source (sa:row& align 0) seq)
+  (sa:assign-source (sa:row& align 1) needle)
   (defparameter score (sa:global-alignment align (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
   (format t "   seq: ~a~%" (sa:to-string seq))
   (format t "needle: ~a~%" (sa:to-string needle))
@@ -106,9 +143,9 @@
 (progn
   (defparameter needle-digit-1x01 (elt (digit-needles) 0))
   (defparameter align-digit (sa:make-align :dna5q-string))
-  (sa:resize (sa:rows align-digit) 2)
-  (sa:assign-source (sa:row align-digit 0) seq)
-  (sa:assign-source (sa:row align-digit 1) needle-digit-1x01)
+  (sa:resize (sa:rows& align-digit) 2)
+  (sa:assign-source (sa:row& align-digit 0) seq)
+  (sa:assign-source (sa:row& align-digit 1) needle-digit-1x01)
   (defparameter score (sa:global-alignment align-digit (sa:make-simple-score 0 -1 -1) (sa:make-align-config :t-nil-nil-t)))
   (format t "   seq: ~a~%" (sa:to-string seq))
   (format t "needle: ~a~%" (sa:to-string needle-digit-1x01))

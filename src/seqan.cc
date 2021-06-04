@@ -53,25 +53,25 @@ void seqan_startup() {
   sa.def("atEnd<SeqFileIn>"_raw,+[](SeqFileIn& sf) {return atEnd(sf); } );
 
   class_<Segment<CharString,PrefixSegment>>(sa,"Segment<CharString,PrefixSegment>"_raw );
-  sa.def("prefix<Segment<CharString,PrefixSegment>>"_raw, +[](CharString& s, int e) { return prefix(s,e); } );
+  sa.def("prefix(<Segment<CharString,PrefixSegment>>&,int)"_raw, +[](CharString& s, int e) { return prefix(s,e); } );
   class_<Segment<CharString,InfixSegment>>(sa,"Segment<CharString,InfixSegment>"_raw );
-  sa.def("infix<Segment<CharString,InfixSegment>>"_raw, +[](CharString& s, int b, int e) { return infix(s,b,e); } );
+  sa.def("infix(<Segment<CharString,InfixSegment>>&,int,int)"_raw, +[](CharString& s, int b, int e) { return infix(s,b,e); } );
   class_<Segment<CharString,SuffixSegment>>(sa,"Segment<CharString,SuffixSegment>"_raw );
-  sa.def("prefix<Segment<CharString,SuffixSegment>>"_raw, +[](CharString& s, int b) { return prefix(s,b); } );
+  sa.def("prefix(<Segment<CharString,SuffixSegment>>&,int)"_raw, +[](CharString& s, int b) { return prefix(s,b); } );
 
   class_<Segment<DnaString,PrefixSegment>>(sa,"Segment<DnaString,PrefixSegment>"_raw );
-  sa.def("prefix<Segment<DnaString,PrefixSegment>>"_raw, +[](DnaString& s, int e) { return prefix(s,e); } );
+  sa.def("prefix(<Segment<DnaString,PrefixSegment>>&,int)"_raw, +[](DnaString& s, int e) { return prefix(s,e); } );
   class_<Segment<DnaString,InfixSegment>>(sa,"Segment<DnaString,InfixSegment>"_raw );
-  sa.def("infix<Segment<DnaString,InfixSegment>>"_raw, +[](DnaString& s, int b, int e) { return infix(s,b,e); } );
+  sa.def("infix(<Segment<DnaString,InfixSegment>>&,int,int)"_raw, +[](DnaString& s, int b, int e) { return infix(s,b,e); } );
   class_<Segment<DnaString,SuffixSegment>>(sa,"Segment<DnaString,SuffixSegment>"_raw );
-  sa.def("prefix<Segment<DnaString,SuffixSegment>>"_raw, +[](DnaString& s, int b) { return prefix(s,b); } );
+  sa.def("prefix(<Segment<DnaString,SuffixSegment>>&,int)"_raw, +[](DnaString& s, int b) { return prefix(s,b); } );
 
   class_<Segment<Dna5QString,PrefixSegment>>(sa,"Segment<Dna5QString,PrefixSegment>"_raw );
-  sa.def("prefix<Segment<Dna5QString,PrefixSegment>>"_raw, +[](Dna5QString& s, int e) { return prefix(s,e); } );
+  sa.def("prefix(<Segment<Dna5QString,PrefixSegment>>&,int)"_raw, +[](Dna5QString& s, int e) { return prefix(s,e); } );
   class_<Segment<Dna5QString,InfixSegment>>(sa,"Segment<Dna5QString,InfixSegment>"_raw );
-  sa.def("infix<Segment<Dna5QString,InfixSegment>>"_raw, +[](Dna5QString& s, int b, int e) { return infix(s,b,e); } );
+  sa.def("infix(<Segment<Dna5QString,InfixSegment>>&,int,int)"_raw, +[](Dna5QString& s, int b, int e) { return infix(s,b,e); } );
   class_<Segment<Dna5QString,SuffixSegment>>(sa,"Segment<Dna5QString,SuffixSegment>"_raw );
-  sa.def("prefix<Segment<Dna5QString,SuffixSegment>>"_raw, +[](Dna5QString& s, int b) { return prefix(s,b); } );
+  sa.def("prefix(<Segment<Dna5QString,SuffixSegment>>&,int)"_raw, +[](Dna5QString& s, int b) { return prefix(s,b); } );
   
   class_<CharString>(sa,"CharString"_raw )
     .def_constructor("make-CharString"_raw,constructor<std::string>()) ;
@@ -79,6 +79,9 @@ void seqan_startup() {
   class_<DnaString>(sa,"DnaString"_raw)
     .def_constructor("make-DnaString"_raw,constructor<std::string>()) ;
   sa.def("clear<DnaString>"_raw, +[](DnaString& ds) {clear(ds);} );
+  class_<Dna5String>(sa,"Dna5String"_raw)
+    .def_constructor("make-Dna5String"_raw,constructor<std::string>()) ;
+  sa.def("clear<Dna5String>"_raw, +[](Dna5String& ds) {clear(ds);} );
   class_<Dna5QString>(sa,"Dna5QString"_raw)
     .def_constructor("make-Dna5QString"_raw,constructor<std::string>()) ;
   sa.def("clear<Dna5QString>"_raw, +[](Dna5QString& ds) {clear(ds);} );
@@ -259,7 +262,7 @@ void seqan_startup() {
   sa.def("infix<Finder<CharString,void>>"_raw,
          +[](Finder<CharString,void>& Finder) {
            return infix(Finder); });
-
+  
   sa.def("length<Finder<DnaString,void>>"_raw,
          +[](Finder<DnaString,void>& Finder) { return length(Finder); });
   sa.def("beginPosition<Finder<DnaString,void>>"_raw,
@@ -280,14 +283,40 @@ void seqan_startup() {
          +[](Finder<Dna5QString,void>& Finder) {
            return infix(Finder); });
 
+  sa.def("beginPosition(Gaps<CharString>&)"_raw, +[](Gaps<CharString>& gaps) { return beginPosition(gaps); });
+  sa.def("beginPosition(Gaps<DnaString>&)"_raw, +[](Gaps<DnaString>& gaps) { return beginPosition(gaps); });
+  sa.def("beginPosition(Gaps<Dna5QString>&)"_raw, +[](Gaps<Dna5QString>& gaps) { return beginPosition(gaps); });
+
+  sa.def("endPosition(Gaps<CharString>&)"_raw, +[](Gaps<CharString>& gaps) { return endPosition(gaps); });
+  sa.def("endPosition(Gaps<DnaString>&)"_raw, +[](Gaps<DnaString>& gaps) { return endPosition(gaps); });
+  sa.def("endPosition(Gaps<Dna5QString>&)"_raw, +[](Gaps<Dna5QString>& gaps) { return endPosition(gaps); });
+  
+  sa.def("length(Align<CharString,ArrayGaps>&)"_raw, +[](Align<CharString,ArrayGaps>& obj){ return length(obj); });
+  sa.def("length(Align<DnaString,ArrayGaps>&)"_raw, +[](Align<DnaString,ArrayGaps>& obj){ return length(obj); });
+  sa.def("length(Align<Dna5QString,ArrayGaps>&)"_raw, +[](Align<Dna5QString,ArrayGaps>& obj){ return length(obj); });
   sa.def("length(CharString)"_raw, +[](CharString& obj){ return length(obj); });
   sa.def("length(DnaString)"_raw, +[](DnaString& obj){ return length(obj); });
   sa.def("length(Dna5QString)"_raw, +[](Dna5QString& obj){ return length(obj); });
   sa.def("length(String<Gaps<CharString>>)"_raw, +[](String<Gaps<CharString>>& obj){ return length(obj); });
   sa.def("length(String<Gaps<DnaString>>)"_raw, +[](String<Gaps<DnaString>>& obj){ return length(obj); });
   sa.def("length(String<Gaps<Dna5QString>>)"_raw, +[](String<Gaps<Dna5QString>>& obj){ return length(obj); });
+  sa.def("length(Gaps<CharString>)"_raw, +[](Gaps<CharString>& obj) { return length(obj); } );
+  sa.def("length(Gaps<DnaString>)"_raw, +[](Gaps<DnaString>& obj) { return length(obj); } );
+  sa.def("length(Gaps<Dna5QString>)"_raw, +[](Gaps<Dna5QString>& obj) { return length(obj); } );
 
-  
+
+  sa.def("toSourcePosition(Gaps<CharString>,int)"_raw, +[](Gaps<CharString>& obj, int pos) {
+    auto result = toSourcePosition(obj,pos);
+    printf("%s:%d:%s result = %lu\n", __FILE__, __LINE__, __FUNCTION__, result );
+    return result;
+  } );
+  sa.def("toSourcePosition(Gaps<DnaString>,int)"_raw, +[](Gaps<DnaString>& obj, int pos) { return toSourcePosition(obj,pos); } );
+  sa.def("toSourcePosition(Gaps<Dna5QString>,int)"_raw, +[](Gaps<Dna5QString>& obj, int pos) { return toSourcePosition(obj,pos); } );
+
+  sa.def("toViewPosition(Gaps<CharString>,int)"_raw, +[](Gaps<CharString>& obj, int pos) { return toViewPosition(obj,pos); } );
+  sa.def("toViewPosition(Gaps<DnaString>,int)"_raw, +[](Gaps<DnaString>& obj, int pos) { return toViewPosition(obj,pos); } );
+  sa.def("toViewPosition(Gaps<Dna5QString>,int)"_raw, +[](Gaps<Dna5QString>& obj, int pos) { return toViewPosition(obj,pos); } );
+
   //
   // Read different types of sequence files
   //
@@ -306,24 +335,39 @@ void seqan_startup() {
   class_<Gaps<CharString>>( sa, "Gaps<CharString>"_raw);
   class_<Gaps<DnaString>>( sa, "Gaps<DnaString>"_raw);
   class_<Gaps<Dna5QString>>( sa, "Gaps<Dna5QString>"_raw);
+  
   class_<String<Gaps<CharString>>>( sa, "String<Gaps<CharString>>"_raw);
   class_<String<Gaps<DnaString>>>( sa, "String<Gaps<DnaString>>"_raw);
   class_<String<Gaps<Dna5QString>>>( sa, "String<Gaps<Dna5QString>>"_raw);
-  sa.def("rows<Align<CharString,ArrayGaps>>"_raw, +[](Align<CharString,ArrayGaps>& al) -> String<Gaps<CharString>>& {return rows(al); } );
-  sa.def("rows<Align<DnaString,ArrayGaps>>"_raw, +[](Align<DnaString,ArrayGaps>& al) -> String<Gaps<DnaString>>& { return rows(al); } );
-  sa.def("rows<Align<Dna5QString,ArrayGaps>>"_raw, +[](Align<Dna5QString,ArrayGaps>& al) -> String<Gaps<Dna5QString>>& { return rows(al); } );
-  sa.def("row(Align<Dna5QString,ArrayGaps>,int)"_raw, +[](Align<Dna5QString,ArrayGaps>& al, int r) -> Gaps<Dna5QString>& { return row(al,r); } );
-  sa.def("row(Align<CharString,ArrayGaps>,int)"_raw, +[](Align<CharString,ArrayGaps>& al, int r) -> Gaps<CharString>& { return row(al,r); } );
-  sa.def("row(Align<DnaString,ArrayGaps>,int)"_raw, +[](Align<DnaString,ArrayGaps>& al, int r) -> Gaps<DnaString>& { return row(al,r); } );
-  sa.def("resize<String<Gaps<CharString>>>"_raw, +[](String<Gaps<CharString>>& rows, int num) {
-    resize(rows,num);
-  } );
+  
+  sa.def("rows&(Align<CharString,ArrayGaps>)"_raw, +[](Align<CharString,ArrayGaps>& al) -> String<Gaps<CharString>>& {return rows(al); } );
+  sa.def("rows&(Align<DnaString,ArrayGaps>)"_raw, +[](Align<DnaString,ArrayGaps>& al) -> String<Gaps<DnaString>>& { return rows(al); } );
+  sa.def("rows&(Align<Dna5QString,ArrayGaps>)"_raw, +[](Align<Dna5QString,ArrayGaps>& al) -> String<Gaps<Dna5QString>>& { return rows(al); } );
+  sa.def("row&(Align<Dna5QString,ArrayGaps>,int)"_raw, +[](Align<Dna5QString,ArrayGaps>& al, int r) -> Gaps<Dna5QString>& { return row(al,r); } );
+  sa.def("row&(Align<CharString,ArrayGaps>,int)"_raw, +[](Align<CharString,ArrayGaps>& al, int r) -> Gaps<CharString>& { return row(al,r); } );
+  sa.def("row&(Align<DnaString,ArrayGaps>,int)"_raw, +[](Align<DnaString,ArrayGaps>& al, int r) -> Gaps<DnaString>& { return row(al,r); } );
+  
+  sa.def("resize<String<Gaps<CharString>>>"_raw, +[](String<Gaps<CharString>>& rows, int num) {resize(rows,num);} );
   sa.def("resize<String<Gaps<DnaString>>>"_raw, +[](String<Gaps<DnaString>>& rows, int num) { resize(rows,num); } );
   sa.def("resize<String<Gaps<Dna5QString>>>"_raw, +[](String<Gaps<Dna5QString>>& rows, int num) { resize(rows,num); } );
+  
   sa.def("assignSource(Gaps<CharString>&,int)"_raw, +[](Gaps<CharString>& gaps, CharString& str) { assignSource( gaps, str ); } );
   sa.def("assignSource(Gaps<DnaString>&,int)"_raw, +[](Gaps<DnaString>& gaps, DnaString& str) { assignSource( gaps, str ); } );
   sa.def("assignSource(Gaps<Dna5QString>&,int)"_raw, +[](Gaps<Dna5QString>& gaps, Dna5QString& str) { assignSource( gaps, str ); } );
 
+  sa.def("setBeginPosition(Gaps<CharString>&,int)"_raw, +[](Gaps<CharString>& gaps, int source_pos) { setBeginPosition(gaps,source_pos); });
+  sa.def("setBeginPosition(Gaps<DnaString>&,int)"_raw, +[](Gaps<DnaString>& gaps, int source_pos) { setBeginPosition(gaps,source_pos); });
+  sa.def("setBeginPosition(Gaps<Dna5QString>&,int)"_raw, +[](Gaps<Dna5QString>& gaps, int source_pos) { setBeginPosition(gaps,source_pos); });
+
+  sa.def("insertGap(Gaps<CharString>&,int)"_raw, +[](Gaps<CharString>& gaps, int view_pos) { insertGap(gaps,view_pos); });
+  sa.def("insertGap(Gaps<DnaString>&,int)"_raw, +[](Gaps<DnaString>& gaps, int view_pos) { insertGap(gaps,view_pos); });
+  sa.def("insertGap(Gaps<Dna5QString>&,int)"_raw, +[](Gaps<Dna5QString>& gaps, int view_pos) { insertGap(gaps,view_pos); });
+
+  sa.def("insertGaps(Gaps<CharString>&,int,int)"_raw, +[](Gaps<CharString>& gaps, int view_pos, int count) { insertGaps(gaps,view_pos,count); });
+  sa.def("insertGaps(Gaps<DnaString>&,int,int)"_raw, +[](Gaps<DnaString>& gaps, int view_pos, int count) { insertGaps(gaps,view_pos,count); });
+  sa.def("insertGaps(Gaps<Dna5QString>&,int,int)"_raw, +[](Gaps<Dna5QString>& gaps, int view_pos, int count) { insertGaps(gaps,view_pos,count); });
+
+  
   sa.def("globalAlignment(Align<CharString,ArrayGaps>,SimpleScore,AlignConfig<false,false,false,false>)"_raw,
          +[](Align<CharString,ArrayGaps>& align,SimpleScore& score, AlignConfig<false,false,false,false>& alignConfig) {
            return globalAlignment(align,score,alignConfig);
@@ -441,6 +485,34 @@ void seqan_startup() {
              int upperDiagonal ) {
            return globalAlignment(align,score,alignConfig,lowerDiagonal,upperDiagonal);
          } );
+
+
+  sa.def("localAlignment(Align<CharString,ArrayGaps>&,SimpleScore&,int,int)"_raw,
+         +[](Align<CharString,ArrayGaps>& align,SimpleScore& score,int lowerDiagonal, int upperDiagonal) {
+           return localAlignment(align,score,lowerDiagonal,upperDiagonal);
+         } );
+  sa.def("localAlignment(Align<DnaString,ArrayGaps>&,SimpleScore&,int,int)"_raw,
+         +[](Align<DnaString,ArrayGaps>& align,SimpleScore& score,int lowerDiagonal, int upperDiagonal) {
+           return localAlignment(align,score,lowerDiagonal,upperDiagonal);
+         } );
+  sa.def("localAlignment(Align<Dna5QString,ArrayGaps>&,SimpleScore&,int,int)"_raw,
+         +[](Align<Dna5QString,ArrayGaps>& align,SimpleScore& score,int lowerDiagonal, int upperDiagonal) {
+           return localAlignment(align,score,lowerDiagonal,upperDiagonal);
+         } );
+  sa.def("localAlignment(Align<CharString,ArrayGaps>&,SimpleScore&)"_raw,
+         +[](Align<CharString,ArrayGaps>& align,SimpleScore& score) {
+           return localAlignment(align,score);
+         } );
+  sa.def("localAlignment(Align<DnaString,ArrayGaps>&,SimpleScore&)"_raw,
+         +[](Align<DnaString,ArrayGaps>& align,SimpleScore& score) {
+           return localAlignment(align,score);
+         } );
+  sa.def("localAlignment(Align<Dna5QString,ArrayGaps>&,SimpleScore&)"_raw,
+         +[](Align<Dna5QString,ArrayGaps>& align,SimpleScore& score) {
+           return localAlignment(align,score);
+         } );
+
+
 
   sa.def("seqan-align"_raw, &sa::seqan_align );
 

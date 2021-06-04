@@ -10,11 +10,13 @@
    #:make-simple-score
    #:make-align
    #:make-align-config
-   #:rows
-   #:row
+   #:rows&
+   #:row&
    #:append-value
    #:at-end
    #:to-string
+   #:to-source-position
+   #:to-view-position
    #:read-record
    #:make-string
    #:make-string-set
@@ -26,8 +28,15 @@
    #:begin-position
    #:end-position
    #:infix
+   #:get-prefix
+   #:get-infix
+   #:get-suffix
    #:length
    #:resize
    #:assign-source
+   #:insert-gap
+   #:insert-gaps
+   #:set-begin-position
    #:global-alignment
+   #:local-alignment
    ))
