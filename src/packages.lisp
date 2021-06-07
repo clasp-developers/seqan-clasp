@@ -2,11 +2,14 @@
 
 (defpackage :seqan
   (:nicknames :sa)
-  (:shadow find length make-string)
+  (:shadow find length make-string close)
   (:use :common-lisp :seqan%)
   (:export
    #:get-absolute-path
    #:make-seq-file-in
+   #:make-seq-file-out
+   #:write-record
+   #:close
    #:make-simple-score
    #:make-align
    #:make-align-config
@@ -24,6 +27,7 @@
    #:make-pattern
    #:find
    #:get-score
+   #:calculate-quality
    #:find-begin
    #:begin-position
    #:end-position

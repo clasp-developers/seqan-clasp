@@ -1,8 +1,23 @@
 (in-package :seqan)
 
 (defun get-absolute-path (path) (|getAbsolutePath| path))
-(defun make-seq-file-in (path) (|make-SeqFileIn| path))
-  
+
+(defun make-seq-file-in (path)
+  (if (probe-file path)
+      (|make-SeqFileIn| path)
+      (error "The file ~a does not exist" path)))
+
+(defun make-seq-file-out (path)
+  (|make-SeqFileOut| path))
+
+(defgeneric write-record (file header data)
+  (:method ((file |SeqFileOut|) (header |CharString|) (data |Dna5QString|))
+    (|writeRecord(SeqFileOut&,CharString&,Dna5QString&)| file header data)))
+
+(defgeneric close (file)
+  (:method ((file |SeqFileIn|)) (|close(SeqFileIn&)| file))
+  (:method ((file |SeqFileOut|)) (|close(SeqFileOut&)| file)))
+
 (defgeneric make-string (kind &optional value)
   (:method ((kind (eql :char-string)) &optional (value ""))
     (|make-CharString| value))
@@ -18,6 +33,27 @@
     (|make-StringSet<DnaString>|))
   (:method ((kind (eql :dna5q-string)))
     (|make-StringSet<Dna5QString>|)))
+
+(defgeneric []& (sequence pos)
+  (:method ((sequence |CharString|) pos) (|[](CharString&,int)->char&| sequence pos))
+  (:method ((sequence |DnaString|) pos) (|[](DnaString&,int)->Dna&| sequence pos))
+  (:method ((sequence |Dna5QString|) pos) (|[](Dna5QString&,int)->Dna5Q&| sequence pos)))
+
+(defgeneric ord-value (base)
+  (:method ((base |Char|)) (|ordValue(Char&)| base))
+  (:method ((base |Dna|)) (|ordValue(Dna&)| base))
+  (:method ((base |Dna5Q|)) (|ordValue(Dna5Q&)| base)))
+
+(defgeneric get-quality-value (base)
+  (:method ((base |Dna5Q|)) (|getQualityValue(Dna5Q&)| base)))
+
+(defgeneric count-quality-value-less-than (sequence quality &optional start end)
+  (:method ((sequence |Dna5QString|) quality &optional (start 0) (end (length sequence)))
+    (|countQualityValueLessThan(Dna5QString&,int,int,int)| sequence quality start end)))
+
+(defgeneric calculate-quality (sequence &optional start end)
+  (:method ((sequence |Dna5QString|) &optional (start 0) (end (length sequence)))
+    (|calculateQuality(Dna5QString&,int,int,string&)| sequence start end)))
 
 (defun make-simple-score (&optional (match 0) (mismatch -1) (gap -1) (gap-open gap))
   (|make-SimpleScore| match mismatch gap gap-open))

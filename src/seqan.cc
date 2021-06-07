@@ -50,6 +50,16 @@ void seqan_startup() {
   class_<SeqFileIn>(sa,"SeqFileIn"_raw)
     .def_constructor("make-SeqFileIn"_raw,constructor<const char*>())
     ;
+  class_<SeqFileIn>(sa,"SeqFileIn"_raw)
+    .def_constructor("make-SeqFileIn"_raw,constructor<const char*>())
+    ;
+  class_<SeqFileOut>(sa,"SeqFileOut"_raw)
+    .def_constructor("make-SeqFileOut"_raw,constructor<const char*>())
+    ;
+  sa.def("writeRecord(SeqFileOut&,CharString&,Dna5QString&)"_raw,+[](SeqFileOut& sf, CharString& header, Dna5QString& data) { writeRecord(sf,header,data); } );
+  sa.def("close(SeqFileOut&)"_raw,+[](SeqFileOut& sf) { close(sf); } );
+  sa.def("close(SeqFileIn&)"_raw,+[](SeqFileIn& sf) { close(sf); } );
+  
   sa.def("atEnd<SeqFileIn>"_raw,+[](SeqFileIn& sf) {return atEnd(sf); } );
 
   class_<Segment<CharString,PrefixSegment>>(sa,"Segment<CharString,PrefixSegment>"_raw );
@@ -72,6 +82,10 @@ void seqan_startup() {
   sa.def("infix(<Segment<Dna5QString,InfixSegment>>&,int,int)"_raw, +[](Dna5QString& s, int b, int e) { return infix(s,b,e); } );
   class_<Segment<Dna5QString,SuffixSegment>>(sa,"Segment<Dna5QString,SuffixSegment>"_raw );
   sa.def("prefix(<Segment<Dna5QString,SuffixSegment>>&,int)"_raw, +[](Dna5QString& s, int b) { return prefix(s,b); } );
+
+  class_<char>(sa,"Char"_raw);
+  class_<Dna>(sa,"Dna"_raw);
+  class_<Dna5Q>(sa,"Dna5Q"_raw);
   
   class_<CharString>(sa,"CharString"_raw )
     .def_constructor("make-CharString"_raw,constructor<std::string>()) ;
@@ -86,7 +100,43 @@ void seqan_startup() {
     .def_constructor("make-Dna5QString"_raw,constructor<std::string>()) ;
   sa.def("clear<Dna5QString>"_raw, +[](Dna5QString& ds) {clear(ds);} );
 
-  
+  sa.def("[](CharString&,int)->char&"_raw,+[](CharString& ds, int pos) -> char& { return ds[pos]; } );
+  sa.def("[](DnaString&,int)->Dna&"_raw,+[](DnaString& ds, int pos) -> Dna& { return ds[pos]; } );
+  sa.def("[](Dna5QString&,int)->Dna5Q&"_raw,+[](Dna5QString& ds, int pos) -> Dna5Q& { return ds[pos]; } );
+
+  sa.def("ordValue(Char&)"_raw,+[](char& cs) { return ordValue(cs); } );
+  sa.def("ordValue(Dna&)"_raw,+[](Dna& cs) { return ordValue(cs); } );
+  sa.def("ordValue(Dna5Q&)"_raw,+[](Dna5Q& cs) { return ordValue(cs); } );
+
+  sa.def("getQualityValue(Dna5Q&)"_raw,+[](Dna5Q& cs) { return getQualityValue(cs); } );
+  sa.def("countQualityValueLessThan(Dna5QString&,int,int,int)"_raw,
+         +[](Dna5QString& ds, int quality,int start, int end) {
+           int count = 0;
+           for ( size_t pos=start; pos<end; ++pos) {
+             if (getQualityValue(ds[pos])<quality) ++count;
+           }
+           return count;
+         } );
+  sa.def("calculateQuality(Dna5QString&,int,int,string&)"_raw,
+         +[](Dna5QString& ds,int start, int end, std::string& qchar) {
+           double pgood = 1.0;
+           qchar = std::string((end-start),' ');
+           for ( size_t pos=start; pos<end; ++pos) {
+             int qi = getQualityValue(ds[pos]);
+             qchar[pos-start] = '!'+qi;
+             double pierror = pow(10.0,-qi/10.0);
+             double pigood = 1.0-pierror;
+             pgood *= pigood;
+             // printf("%s:%d:%s running qi=%d pigood=%lf pgood = %lf\n", __FILE__, __LINE__, __FUNCTION__, qi, pigood, pgood);
+           }
+           double qtotal = -10.0*log10(1.0-pgood);
+           // printf("%s:%d:%s qstr = %s pgood = %lf  qtotal = %lf\n", __FILE__, __LINE__, __FUNCTION__, qchar.c_str(), pgood, qtotal );
+           return int(qtotal);
+         },
+         pureOutValue<3>());
+  sa.def("valueSize<char>"_raw, +[]() { return valueSize<char>(); } );
+  sa.def("valueSize<Dna>"_raw, +[]() { return valueSize<Dna>(); } );
+  sa.def("valueSize<Dna5Q>"_raw, +[]() { return valueSize<Dna5Q>(); } );
   
   class_<StringSet<CharString>>(sa, "StringSet<CharString>"_raw)
     .def_constructor("make-StringSet<CharString>"_raw, constructor<>())
