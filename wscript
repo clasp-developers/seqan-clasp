@@ -12,7 +12,7 @@ def configure(cfg):
     pass
 
 def update_dependencies(cfg):
-    print("Update seqan")
+    log.pprint('BLUE', "In update_dependencies for seqan")
     fetch_git_revision("extensions/seqan-clasp/seqan",
                        "https://github.com/seqan/seqan.git",
                        label = "master")
