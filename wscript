@@ -1,4 +1,4 @@
-import os, logging
+import os
 from wscript_utils import *
 
 def analyze_clasp(cfg):
@@ -13,7 +13,7 @@ def configure(cfg):
     pass
 
 def update_dependencies(cfg):
-    log.pprint('BLUE', "In update_dependencies for seqan")
+    print( "In update_dependencies for seqan")
     fetch_git_revision("extensions/seqan-clasp/seqan",
                        "https://github.com/seqan/seqan.git",
                        label = "master")
