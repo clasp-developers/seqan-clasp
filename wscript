@@ -1,3 +1,4 @@
+import os, logging
 from wscript_utils import *
 
 def analyze_clasp(cfg):
