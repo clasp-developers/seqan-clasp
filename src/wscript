@@ -4,4 +4,13 @@ def configure(cfg):
 
 def build(bld):
     bld.extensions_source_files.append(bld.path.find_node("seqan.cc"))
-    
+    bld.install_files('${PREFIX}lib/clasp/extensions/seqan-clasp/src/',
+        start_dir.ant_glob('**/*.lisp'),
+        cwd=start_dir, relative_trick=True)
+    bld.install_files('${PREFIX}lib/clasp/extensions/seqan-clasp/src/',
+        start_dir.ant_glob('**/*.asd'),
+        cwd=start_dir, relative_trick=True)
+    bld.install_files('${PREFIX}lib/clasp/extensions/seqan-clasp/src/',
+        start_dir.ant_glob('**/*.cc'),
+        cwd=start_dir, relative_trick=True)
+        
