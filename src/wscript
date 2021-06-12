@@ -1,5 +1,6 @@
 
 def configure(cfg):
+    cfg.extensions_startup_scripts.append("seqan-startup.lisp")
     pass
 
 def build(bld):

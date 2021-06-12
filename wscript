@@ -10,7 +10,7 @@ def options(cfg):
 def configure(cfg):
 #    cfg.check_cxx(stlib='seqan3', cflags='-Wall', uselib_store='SEQAN')
 #    cfg.extensions_stdlib += cfg.env.STLIB_SEQAN
-    pass
+    cfg.recurse("src")
 
 def update_dependencies(cfg):
     print( "In update_dependencies for seqan")
