@@ -27,6 +27,7 @@
    #:make-pattern
    #:find
    #:get-score
+   #:count-quality-value-less-than
    #:calculate-quality
    #:find-begin
    #:begin-position
