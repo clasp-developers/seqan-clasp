@@ -354,7 +354,6 @@ void seqan_startup() {
   sa.def("length(Gaps<DnaString>)"_raw, +[](Gaps<DnaString>& obj) { return length(obj); } );
   sa.def("length(Gaps<Dna5QString>)"_raw, +[](Gaps<Dna5QString>& obj) { return length(obj); } );
 
-
   sa.def("toSourcePosition(Gaps<CharString>,int)"_raw, +[](Gaps<CharString>& obj, int pos) {
     auto result = toSourcePosition(obj,pos);
     printf("%s:%d:%s result = %lu\n", __FILE__, __LINE__, __FUNCTION__, result );

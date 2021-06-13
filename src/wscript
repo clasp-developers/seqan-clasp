@@ -17,6 +17,7 @@ def build(bld):
         cwd=start_dir, relative_trick=True)
     src = bld.path.find_node("seqan-startup.lisp")
     dest = bld.path.get_bld().parent.parent.parent.make_node('extension-startup-loads/seqan-startup.lisp')
+    bld.extension_startup_load_output_nodes.append(dest)
     print("About to add seqan-startup.lisp to %s" % dest.abspath())
     bld(source=src, target=dest, rule='cp ${SRC} ${TGT}')
     bld.install_as('${PREFIX}/bin/extension-startup-loads/seqan-startup.lisp', 'seqan-startup.lisp')
