@@ -2,7 +2,7 @@
 
 (defpackage :seqan
   (:nicknames :sa)
-  (:shadow find length make-string close)
+  (:shadow find length make-string close position)
   (:use :common-lisp :seqan%)
   (:export
    #:get-absolute-path
@@ -17,6 +17,7 @@
    #:row&
    #:append-value
    #:at-end
+   #:position
    #:to-string
    #:to-source-position
    #:to-view-position

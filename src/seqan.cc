@@ -62,6 +62,9 @@ void seqan_startup() {
   
   sa.def("atEnd<SeqFileIn>"_raw,+[](SeqFileIn& sf) {return atEnd(sf); } );
 
+  sa.def("position(SeqFileOut&)"_raw,+[](SeqFileOut& sf) { return (size_t)position(sf); });
+  sa.def("position(SeqFileIn&)"_raw,+[](SeqFileIn& sf) { return (size_t)position(sf); });
+
   class_<Segment<CharString,PrefixSegment>>(sa,"Segment<CharString,PrefixSegment>"_raw );
   sa.def("prefix(<Segment<CharString,PrefixSegment>>&,int)"_raw, +[](CharString& s, int e) { return prefix(s,e); } );
   class_<Segment<CharString,InfixSegment>>(sa,"Segment<CharString,InfixSegment>"_raw );
