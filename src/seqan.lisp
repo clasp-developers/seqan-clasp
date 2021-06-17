@@ -84,9 +84,9 @@
 
 (defgeneric at-end (file)
   (:method ((file |SeqFileOut|))
-    (|atEnd<SeqFileOut>| file))
+    (|atEnd(SeqFileOut&)| file))
   (:method ((file |SeqFileIn|))
-    (|atEnd<SeqFileIn>| file)))
+    (|atEnd(SeqFileIn&)| file)))
 
 (defgeneric position (file)
   (:method ((file |SeqFileOut|))
