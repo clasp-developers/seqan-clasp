@@ -83,8 +83,16 @@
 
 
 (defgeneric at-end (file)
+  (:method ((file |SeqFileOut|))
+    (|atEnd(SeqFileOut&)| file))
   (:method ((file |SeqFileIn|))
-    (|atEnd<SeqFileIn>| file)))
+    (|atEnd(SeqFileIn&)| file)))
+
+(defgeneric position (file)
+  (:method ((file |SeqFileOut|))
+    (|position(SeqFileOut&)| file))
+  (:method ((file |SeqFileIn|))
+    (|position(SeqFileIn&)| file)))
 
 (defgeneric read-record (metadata sequence file)
   (:method ((metadata |CharString|) (sequence |DnaString|) (file |SeqFileIn|))
