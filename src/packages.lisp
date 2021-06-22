@@ -45,4 +45,5 @@
    #:set-begin-position
    #:global-alignment
    #:local-alignment
+   #:assign
    ))

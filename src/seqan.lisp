@@ -450,6 +450,11 @@
     (|localAlignment(Align<Dna5QString,ArrayGaps>&,SimpleScore&)| align score lower-diagonal upper-diagonal))
   )
 
+(defgeneric assign (target source)
+  (:method ((target core:str8ns) (source |Dna5QString|))
+    (|assign(Str8Ns_sp,Dna5QString&)| target source)))
+
+
 (defmacro local-alignment (align score &rest args)
   (if (= 0 (length args))
       `(local-alignment-all ,align ,score)

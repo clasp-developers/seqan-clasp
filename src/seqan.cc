@@ -8,33 +8,6 @@
 
 using namespace seqan;
 
-namespace sa {
-
-int seqan_align(const std::string& input_text, const std::string& input_pattern )
-{
-  typedef String<char> TSequence;                 // sequence type
-  typedef Align<TSequence, ArrayGaps> TAlign;      // align type
-
-  TSequence seq1 = input_text;
-  TSequence seq2 = input_pattern;
-  
-  TAlign align;
-  resize(rows(align), 2);
-  assignSource(row(align, 0), seq1);
-  assignSource(row(align, 1), seq2);
-    // Initialization
-int score = globalAlignment(align, Score<int, Simple>(0, -1, -1));
-    std::cout << "Score: " << score << std::endl;
-    std::cout << align << std::endl;
-
-    return 0;
-}
-
-
-
-};
-
-
 
 PACKAGE_USE("COMMON-LISP");
 PACKAGE_NICKNAME("SA%");
@@ -48,10 +21,10 @@ void seqan_startup() {
   package_ sa(SAPkg);
   sa.def("getAbsolutePath"_raw,&getAbsolutePath);
   class_<SeqFileIn>(sa,"SeqFileIn"_raw)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsizeof-pointer-div"
     .def_constructor("make-SeqFileIn"_raw,constructor<const char*>())
-    ;
-  class_<SeqFileIn>(sa,"SeqFileIn"_raw)
-    .def_constructor("make-SeqFileIn"_raw,constructor<const char*>())
+#pragma clang diagnostic pop
     ;
   class_<SeqFileOut>(sa,"SeqFileOut"_raw)
     .def_constructor("make-SeqFileOut"_raw,constructor<const char*>())
@@ -565,10 +538,6 @@ void seqan_startup() {
            return localAlignment(align,score);
          } );
 
-
-
-  sa.def("seqan-align"_raw, &sa::seqan_align );
-
   // Convenience functions to return a string representation of each SeqAn prefix/infix/suffix type
   sa.def("to-string(Segment<CharString,PrefixSegment>)"_raw,+[](Segment<CharString,PrefixSegment>& is) { stringstream ss; ss << is; return ss.str(); } );
   sa.def("to-string(Segment<CharString,InfixSegment>)"_raw,+[](Segment<CharString,InfixSegment>& is) { stringstream ss; ss << is; return ss.str(); } );
@@ -590,7 +559,31 @@ void seqan_startup() {
   sa.def("to-string(Align<DnaString,ArrayGaps>)"_raw, +[] (Align<DnaString,ArrayGaps>& align) { stringstream ss; ss << align; return ss.str(); } );
   sa.def("to-string(Align<Dna5QString,ArrayGaps>)"_raw, +[] (Align<Dna5QString,ArrayGaps>& align) { stringstream ss; ss << align; return ss.str(); } );
   
-  
+  // non-consing
+  sa.def("assign(Str8Ns_sp,Dna5QString&)"_raw,+[](core::Str8Ns_sp tgt,Dna5QString& src) {
+    tgt->fillPointerSet(0);
+    size_t len = length(src);
+    if (len>tgt->_ArrayTotalSize) {
+      core::lisp_adjust_array(tgt,core::make_fixnum(len),core::make_fixnum(len));
+//      printf("%s:%d:%s Adjusted array to %lu\n", __FILE__, __LINE__, __FUNCTION__, len);
+    }
+    tgt->fillPointerSet(len);
+    char* cur = (char*)tgt->begin();
+    for (size_t ii=0; ii<length(src); ii++) {
+      int val = seqan::ordValue(src[ii]);
+      char c;
+      switch (val) {
+      case 0: c = 'A'; break;
+      case 1: c = 'C'; break;
+      case 2: c = 'G'; break;
+      case 3: c = 'T'; break;
+      case 4: c = 'N'; break;
+      default: SIMPLE_ERROR(BF("Unknown Dna5Q code: %d") % val);
+      };
+      *cur = c;
+      cur++;
+    }
+  });
 }
 };
 
