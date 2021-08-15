@@ -20,7 +20,7 @@ def update_dependencies(cfg):
     
 def build(bld):
     bld.extensions_include_dirs.append("extensions/seqan-clasp/seqan/include")
-    bld.recurse("src")
+    bld.recurse("src",name="build")
     
 def build3(bld):
     pass
