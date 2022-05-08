@@ -578,7 +578,7 @@ void seqan_startup() {
       case 2: c = 'G'; break;
       case 3: c = 'T'; break;
       case 4: c = 'N'; break;
-      default: SIMPLE_ERROR(BF("Unknown Dna5Q code: %d") % val);
+      default: SIMPLE_ERROR("Unknown Dna5Q code: %d", val);
       };
       *cur = c;
       cur++;
