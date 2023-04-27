@@ -2,9 +2,12 @@
 #include <clasp/clasp.h>
 #include <clasp/core/translators.h>
 #include <iostream>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsizeof-pointer-div"
 #include <seqan/align.h>
 #include <seqan/seq_io.h>
 #include <seqan/find.h>
+#pragma clang diagnostic pop
 
 using namespace seqan;
 
