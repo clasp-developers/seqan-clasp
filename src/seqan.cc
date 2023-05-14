@@ -9,7 +9,7 @@
 #include <seqan/find.h>
 #pragma clang diagnostic pop
 
-using namespace seqan;
+using namespace seqan2;
 
 
 PACKAGE_USE("COMMON-LISP");
@@ -573,7 +573,7 @@ void seqan_startup() {
     tgt->fillPointerSet(len);
     char* cur = (char*)tgt->begin();
     for (size_t ii=0; ii<length(src); ii++) {
-      int val = seqan::ordValue(src[ii]);
+      int val = seqan2::ordValue(src[ii]);
       char c;
       switch (val) {
       case 0: c = 'A'; break;
